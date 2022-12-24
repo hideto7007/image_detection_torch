@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo 'バッチ実行'
+echo 'train.pyバッチ実行'
 python train.py
-echo 'バッチ終了'
+echo 'train.pyバッチ終了'
 echo $?
