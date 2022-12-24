@@ -3,7 +3,7 @@
 ### Pytorchで画像認識
 
 - version
- - torch 1.13.0
+  - torch 1.13.0
  
  
 ### 実行スクリプト
