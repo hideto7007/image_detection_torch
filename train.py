@@ -49,8 +49,10 @@ train_list = common.make_datapath_list(phase="train", path=config.path)
 val_list = common.make_datapath_list(phase="val", path=config.path)
 
 # Datasetを作成
-train_dataset = HymenopteraDataset(file_list=train_list, transform=transform, phase='train')
-val_dataset = HymenopteraDataset(file_list=val_list, transform=transform, phase='val')
+train_dataset = HymenopteraDataset(
+    file_list=train_list, transform=transform, phase='train')
+val_dataset = HymenopteraDataset(
+    file_list=val_list, transform=transform, phase='val')
 
 # DataLoaderを作成
 train_dataloader = torch.utils.data.DataLoader(
@@ -73,9 +75,9 @@ print(labels)
 # バッチサイズは全て一律の値でないと、モデル学習時に値が一致してなくエラーとなる
 # バッチサイズが一致してるか確認
 for i in train_dataloader:
-  print(i[1].size())
-  
-  
+    print(i[1].size())
+
+
 # 損失関数の設定
 criterion = nn.CrossEntropyLoss()
 
@@ -97,30 +99,37 @@ elif config.model == "efficientNet":
 prame_1, prame_2, prame_3, prame, net = None, None, None, None, None
 
 if config.model == "vgg16" and config.fine_flag:
-    net, prame_1, prame_2, prame_3 = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
+    net, prame_1, prame_2, prame_3 = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
 elif config.model == "resnet" and config.fine_flag:
-    net, prame_1, prame_2, prame_3 = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
+    net, prame_1, prame_2, prame_3 = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
 elif config.model == "efficientNet" and config.fine_flag:
-    net, prame_1, prame_2 = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
+    net, prame_1, prame_2 = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
 elif config.model == "vgg16":
-    net, prame = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
+    net, prame = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
 elif config.model == "resnet":
-    net, prame = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
+    net, prame = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
 elif config.model == "efficientNet":
-    net, prame = learned_models(config.model, config.fine_flag, config.out_feature, models, nn)
-    
-    
+    net, prame = learned_models(
+        config.model, config.fine_flag, config.out_feature, models, nn)
+
+
 # 設定したパラメータ取得
 if config.fine_flag:
-    optimizer = optimizer(net, optim, config.model, config.fine_flag, prame_1, prame_2, prame_3, prame)
+    optimizer = optimizer(net, optim, config.model,
+                          config.fine_flag, prame_1, prame_2, prame_3, prame)
 else:
-    optimizer = optimizer(net, optim, config.model, config.fine_flag, prame_1, prame_2, prame_3, prame)
-    
-    
+    optimizer = optimizer(net, optim, config.model,
+                          config.fine_flag, prame_1, prame_2, prame_3, prame)
+
+
 # モデルを学習させる関数を作成
 
 def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
-
 
     # 初期設定
     # GPUが使えるかを確認
@@ -150,7 +159,6 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
             epoch_loss = 0.0  # epochの損失和
             epoch_corrects = 0  # epochの正解数
-            
 
             # 未学習時の検証性能を確かめるため、epoch=0の訓練は省略
             if (epoch == 0) and (phase == 'train'):
@@ -171,7 +179,7 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
                     outputs = net(inputs)
                     loss = criterion(outputs, labels)  # 損失を計算
                     _, preds = torch.max(outputs, 1)  # ラベルを予測
-                  
+
                     # 訓練時はバックプロパゲーション
                     if phase == 'train':
                         loss.backward()
@@ -182,38 +190,34 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
                     # イタレーション結果の計算
                     # lossの合計を更新
-                    epoch_loss += loss.item() * inputs.size(0)  
+                    epoch_loss += loss.item() * inputs.size(0)
                     # 正解数の合計を更新
                     epoch_corrects += torch.sum(preds == labels.data)
-                    
 
             # epochごとのlossと正解率を表示
             epoch_loss = epoch_loss / len(dataloaders_dict[phase].dataset)
-            epoch_acc = epoch_corrects.double() / len(dataloaders_dict[phase].dataset)
+            epoch_acc = epoch_corrects.double(
+            ) / len(dataloaders_dict[phase].dataset)
             # 更新前のepochごとのlossと正解率を表示
-            before_epoch_loss = before_epoch_loss / len(dataloaders_dict[phase].dataset)
+            before_epoch_loss = before_epoch_loss / \
+                len(dataloaders_dict[phase].dataset)
             # 検証の正解率を保持
             if phase == "val":
-              all_epoch_acc.append(format(epoch_acc, '.4f'))
-              count += 1
+                all_epoch_acc.append(format(epoch_acc, '.4f'))
+                count += 1
 
             if count-1 != 0 and phase == "val":
-              # 一番良いモデルを保存
-              if format(epoch_acc, '.4f') > max(all_epoch_acc[:-1]):
-                
-                torch.save(net.state_dict(), save_path)
+                # 一番良いモデルを保存
+                if format(epoch_acc, '.4f') > max(all_epoch_acc[:-1]):
+
+                    torch.save(net.state_dict(), save_path)
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
-            
+
     print("max_num: ", max(all_epoch_acc))
 
 
 print("学習モデル:", config.model)
-train_model(net, dataloaders_dict, criterion, optimizer, num_epochs=config.num_epochs)
-
-
-
-
-
-    
+train_model(net, dataloaders_dict, criterion,
+            optimizer, num_epochs=config.num_epochs)
