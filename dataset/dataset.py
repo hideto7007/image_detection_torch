@@ -37,7 +37,7 @@ class HymenopteraDataset(data.Dataset):
 
         # index番目の画像をロード
         img_path = self.file_list[index]
-        img = Image.open(img_path).convert('RGB') # [高さ][幅][色RGB]
+        img = Image.open(img_path).convert('RGB')  # [高さ][幅][色RGB]
 
         # 画像の前処理を実施
         img_transformed = self.transform(
@@ -47,7 +47,7 @@ class HymenopteraDataset(data.Dataset):
         if self.phase == "train":
             label = img_path[17:21]
         elif self.phase == "val":
-            label = img_path[16:20]
+            label = img_path[15:19]
 
         # ラベルを数値に変更する
         if label == "ants":
