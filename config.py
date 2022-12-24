@@ -16,7 +16,6 @@ class Config:
         self.mean = (0.485, 0.456, 0.406)
         self.std = (0.229, 0.224, 0.225)
         # vgg16, resnet, efficientNet
-        self.model = "vgg16"
+        self.model = "efficientNet"
         self.fine_flag = 1
         self.out_feature = 2
-

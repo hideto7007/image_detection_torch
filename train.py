@@ -209,6 +209,7 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
             if count-1 != 0 and phase == "val":
                 # 一番良いモデルを保存
                 if format(epoch_acc, '.4f') > max(all_epoch_acc[:-1]):
+                    print("更新")
 
                     torch.save(net.state_dict(), save_path)
 
@@ -219,5 +220,4 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
 
 
 print("学習モデル:", config.model)
-train_model(net, dataloaders_dict, criterion,
-            optimizer, num_epochs=config.num_epochs)
+train_model(net, dataloaders_dict, criterion, optimizer, num_epochs=config.num_epochs)
