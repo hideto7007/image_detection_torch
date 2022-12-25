@@ -1,4 +1,4 @@
-# image_detection_torc
+# image_detection_torch
 
 ### Pytorchで画像認識
 
